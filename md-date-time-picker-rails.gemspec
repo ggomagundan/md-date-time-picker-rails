@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.files = `git ls-files -- {bin,lib,test}/* {LICENSE*,Rakefile,README*}`.split("\n")
 
   s.test_files = ["test/md_date_time_picker_rails_test.rb"]
-  s.homepage = %q{http://rubygems.org/gems/md-date-time-picker-rails}
+  s.homepage = %q{https://github.com/ggomagundan/md-date-time-picker-rails}
   s.require_paths = ["lib"]
   s.rubygems_version = %q{2.0.0}
   s.summary = %q{md_date_time_picker rails Gem!}

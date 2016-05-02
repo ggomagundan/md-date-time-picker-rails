@@ -1,4 +1,6 @@
 # md-date-time-picker-rails
+[![Gem
+Version](https://badge.fury.io/rb/md-date-time-picker-rails.svg)](https://badge.fury.io/rb/md-date-time-picker-rails)
 
 md-date-time-picker-rails gem is the integration of md-date-time-picker javascript
 library for your Rails 4, 5 application.
