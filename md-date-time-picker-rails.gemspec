@@ -1,6 +1,11 @@
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'mdDateTimePicker/rails/version'
+
+
 Gem::Specification.new do |s|
   s.name               = "md-date-time-picker-rails"
-  s.version            = "2.0.0"
+  s.version            = MdDateTimePicker::Rails::VERSION
   s.default_executable = "md-date-time-picker-rails"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
