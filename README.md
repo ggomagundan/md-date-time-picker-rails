@@ -8,7 +8,7 @@ library for your Rails 4, 5 application.
 md-date-time-picker is Material Design - Date and Time Picker
 source: https://github.com/PuranjayJain/md-date-time-picker
 
-Ruby gems url: https://rubygems.org/gems/md_date_time_picker-rails
+Ruby gems url: https://rubygems.org/gems/md-date-time-picker-rails
 
 ## Installation
 
@@ -24,7 +24,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install md_date_time_picker-rails
+    $ gem install md-date-time-picker-rails
 
 Now you need to edit your `app/assets/javascripts/application.js` file
 and add the following line:
@@ -50,19 +50,44 @@ Add this sample code to your `app/assets/javascripts/application.js`
 file
 
 ``` javascript
-$(document).ready(function(){  
-  
-var dialog = new mdDateTimePicker.default({
-                      type: 'date'
-                    });
-                    var toggleButton =
-document.getElementById('id-of-button-to-open-it');
-                    toggleButton.addEventListener('click', function() {
-                      dialog.toggle();
-                    });
+$(document).ready(function(){
+
+ toggleButton = document.getElementById("OBJECT_ID");
+ dialog = new mdDateTimePicker["default"]({
+   type: 'date',
+   type: 'time',                      # If you wanna TIME
+   future: moment().add(1, 'years'),  # Optional
+   trigger: toggleButton              # Optional
+ });
+ toggleButton.addEventListener("click", function() {
+    return dialog.toggle();
+  });
+  toggleButton.addEventListener("onOk", function(e) {
+    return this.value = dialog.time().format('L');
+  });
 
 });
 ```
+
+If use `app/assets/javascript/application.coffee`
+
+``` coffee
+
+  toggleButton = document.getElementById("OBJECT_ID")
+  dialog = new mdDateTimePicker.default(
+    type: 'date',
+    future: moment().add(1, 'years'),
+    trigger: toggleButton
+  )
+
+  toggleButton.addEventListener "click", ->
+    dialog.toggle()
+  toggleButton.addEventListener "onOk", (e) ->
+    this.value = dialog.time.format('L')
+
+```
+
+
 
 ## Full documentation 
 

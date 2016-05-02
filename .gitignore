@@ -1,0 +1,9 @@
+*.gem
+
+# Ignore bundler config
+/.bundle
+/vendor/cache
+/vendor/bundle
+tmp/
+.DS_Store
+node_modules
