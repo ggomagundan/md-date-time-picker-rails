@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.date = %q{2016-05-03}
   s.description = %q{Migration md-date-time-picker to rails Gem}
   s.email = %q{ggogun@gmail.com}
-  s.files = `git ls-files -- {bin,lib,test}/* {LICENSE*,Rakefile,README*}`.split("\n")
+  s.files = `git ls-files -- {bin,lib,test,vendor}/* {LICENSE*,Rakefile,README*}`.split("\n")
 
   s.test_files = ["test/md_date_time_picker_rails_test.rb"]
   s.homepage = %q{https://github.com/ggomagundan/md-date-time-picker-rails}
