@@ -15,7 +15,7 @@ Ruby gems url: https://rubygems.org/gems/md-date-time-picker-rails
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'md_date_time_picker-rails'
+gem 'md-date-time-picker-rails'
 ```
 
 And then execute:
@@ -38,9 +38,13 @@ And you need to edit your `app/assets/stylesheets/application.css` file
 and add the following line:
 
 ```css
-*= require mdDateTimePicker.min
+*= require md-date-time-picker
 ```
 
+If Use `app/assets/stylesheets/application.scss` file
+```scss
+@import "md-date-time-picker";
+```
 
 ## Usage
 
