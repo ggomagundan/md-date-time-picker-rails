@@ -53,9 +53,8 @@ mdDateTimePicker provided prebuilt
 
 This Gem progressively support all Themes
 
-If you apply theme, you need to edit your   or
-`app/assets/stylesheets/application.scss` file
-and add the following line:
+If you apply theme, you need to edit your `app/assets/stylesheets/application.scss` or `app/assets/stylesheets/application.scss` file
+and change the following line:
 
 
 ```css
@@ -64,13 +63,13 @@ and add the following line:
 ```
 
 ```scss
-# app/assets/stylesheets/application.css
+# app/assets/stylesheets/application.scss
 @import "themes/dark/amber/md-date-time-picker";
 ```
 
 Currently,  Support Theme List
 
-- `themes/dark/amber`, `themes/dark/blue`
+- `themes/dark/amber`, `themes/dark/blue`, `themes/dark/blue-grey`
 
 
 
