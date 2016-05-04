@@ -46,6 +46,36 @@ If Use `app/assets/stylesheets/application.scss` file
 @import "md-date-time-picker";
 ```
 
+## Theme
+
+mdDateTimePicker provided prebuilt
+[themes](http://puranjayjain.github.io/md-date-time-picker/)
+
+This Gem progressively support all Themes
+
+If you apply theme, you need to edit your `app/assets/stylesheets/application.scss` or `app/assets/stylesheets/application.scss` file
+and change the following line:
+
+
+```css
+# app/assets/stylesheets/application.css
+*= require themes/dark/amber/md-date-time-picker
+```
+
+```scss
+# app/assets/stylesheets/application.scss
+@import "themes/dark/amber/md-date-time-picker";
+```
+
+Currently,  Support Theme List
+
+- `themes/dark/amber`, `themes/dark/blue`, `themes/dark/blue-grey`
+
+
+
+
+
+
 ## Usage
 
 Here is the example working code to test with your Rails application.
