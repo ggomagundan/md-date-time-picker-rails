@@ -69,7 +69,7 @@ and change the following line:
 
 Currently,  Support Theme List
 
-- `themes/dark/amber`, `themes/dark/blue`, `themes/dark/blue-grey`
+- `themes/dark/amber`, `themes/dark/blue`, `themes/dark/blue-grey`, `themes/dark/cyan`, `themes/dark/deep-orange`, `themes/dark/deep-purple`, `themes/dark/green`, `themes/dark/grey`,`themes/dark/indigo`, `themes/dark/light-blue`, `themes/dark/light-green`, `themes/dark/lime`, `themes/dark/orange`, `themes/dark/pink`, `themes/dark/purple`, `themes/dark/red`, `themes/dark/teal`, `themes/dark/yellow`
 
 
 
