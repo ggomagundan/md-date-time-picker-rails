@@ -1,0 +1,12 @@
+language: ruby
+
+cache: bundler
+
+rvm:
+ - 2.0
+ - 2.1
+ - 2.3.0
+ - ruby-head
+
+gemfile:
+  - Gemfile

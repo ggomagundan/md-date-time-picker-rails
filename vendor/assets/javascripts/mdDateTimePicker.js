@@ -1,21 +1,31 @@
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
-		define(['exports'], factory);
+		define(['exports', 'moment', 'Draggabilly'], factory);
 	} else if (typeof exports !== "undefined") {
-		factory(exports);
+		factory(exports, require('moment'), require('Draggabilly'));
 	} else {
 		var mod = {
 			exports: {}
 		};
-		factory(mod.exports);
+		factory(mod.exports, global.moment, global.Draggabilly);
 		global.mdDateTimePicker = mod.exports;
 	}
-})(this, function (exports) {
+})(this, function (exports, _moment, _Draggabilly) {
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+
+	var _moment2 = _interopRequireDefault(_moment);
+
+	var _Draggabilly2 = _interopRequireDefault(_Draggabilly);
+
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : {
+			default: obj
+		};
+	}
 
 	function _classCallCheck(instance, Constructor) {
 		if (!(instance instanceof Constructor)) {
@@ -39,34 +49,34 @@
 			if (staticProps) defineProperties(Constructor, staticProps);
 			return Constructor;
 		};
-	}(),
-	    _dialog = {
-		view: !0,
-		state: !1
-	},
-	    mdDateTimePicker = function () {
+	}();
+
+	var mdDateTimePicker = function () {
 		/**
   * [constructor of the mdDateTimePicker]
   *
   * @method constructor
   *
-  * @param  {[string]}   type = 'date' or 'time 									[type of dialog]
-  * @param  {[moment]}   init 																		[initial value for the dialog date or time, defaults to today] [@default = today]
-  * @param  {[moment]}   past 																		[the past moment till which the calendar shall render] [@default = exactly 21 Years ago from init]
-  * @param  {[moment]}   future           												[the future moment till which the calendar shall render] [@default = init]
-  * @param	{[Boolean]}  mode 																		[this value tells whether the time dialog will have the 24 hour mode (true) or 12 hour mode (false)] [@default = false]
-  * @param  {[string]}   orientation = 'LANDSCAPE' or 'PORTRAIT'  [force the orientation of the picker @default = 'LANDSCAPE']
-  * @param  {[element]}  trigger																	[element on which all the events will be dispatched e.g var foo = document.getElementById('bar'), here element = foo]
+  * @param  {String}   type = 'date' or 'time 									[type of dialog]
+  * @param  {moment}   init 																		[initial value for the dialog date or time, defaults to today] [@default = today]
+  * @param  {moment}   past 																		[the past moment till which the calendar shall render] [@default = exactly 21 Years ago from init]
+  * @param  {moment}   future           												[the future moment till which the calendar shall render] [@default = init]
+  * @param	{Boolean}  mode 																		[this value tells whether the time dialog will have the 24 hour mode (true) or 12 hour mode (false)] [@default = false]
+  * @param  {String}   orientation = 'LANDSCAPE' or 'PORTRAIT'  [force the orientation of the picker @default = 'LANDSCAPE']
+  * @param  {element}  trigger																	[element on which all the events will be dispatched e.g var foo = document.getElementById('bar'), here element = foo]
+  * @param  {String}  ok = 'ok'																	[ok button's text]
+  * @param  {String}  cancel = 'cancel'													[cancel button's text]
+  * @param  {Boolean} colon = true															[add an option to enable quote in 24 hour mode]
   *
-  * @return {[Object]}    																				[mdDateTimePicker]
+  * @return {Object}    																				[mdDateTimePicker]
   */
 
 		function mdDateTimePicker(_ref) {
 			var type = _ref.type,
 			    _ref$init = _ref.init,
-			    init = _ref$init === undefined ? moment() : _ref$init,
+			    init = _ref$init === undefined ? (0, _moment2.default)() : _ref$init,
 			    _ref$past = _ref.past,
-			    past = _ref$past === undefined ? moment().subtract(21, 'years') : _ref$past,
+			    past = _ref$past === undefined ? (0, _moment2.default)().subtract(21, 'years') : _ref$past,
 			    _ref$future = _ref.future,
 			    future = _ref$future === undefined ? init : _ref$future,
 			    _ref$mode = _ref.mode,
@@ -74,7 +84,13 @@
 			    _ref$orientation = _ref.orientation,
 			    orientation = _ref$orientation === undefined ? 'LANDSCAPE' : _ref$orientation,
 			    _ref$trigger = _ref.trigger,
-			    trigger = _ref$trigger === undefined ? '' : _ref$trigger;
+			    trigger = _ref$trigger === undefined ? '' : _ref$trigger,
+			    _ref$ok = _ref.ok,
+			    ok = _ref$ok === undefined ? 'ok' : _ref$ok,
+			    _ref$cancel = _ref.cancel,
+			    cancel = _ref$cancel === undefined ? 'cancel' : _ref$cancel,
+			    _ref$colon = _ref.colon,
+			    colon = _ref$colon === undefined ? !0 : _ref$colon;
 
 			_classCallCheck(this, mdDateTimePicker);
 
@@ -85,10 +101,14 @@
 			this._mode = mode;
 			this._orientation = orientation;
 			this._trigger = trigger;
+			this._ok = ok;
+			this._cancel = cancel;
+			this._colon = colon;
 
 			/**
    * [dialog selected classes have the same structure as dialog but one level down]
    * @type {Object}
+   * All declarations starting with _ are considered @private
    * e.g
    * sDialog = {
    *   picker: 'some-picker-selected'
@@ -106,7 +126,7 @@
   *
   * @method time
   *
-  * @param  {[moment]} m
+  * @param  {moment} m
   *
   */
 
@@ -393,11 +413,9 @@
 				this._addId(cancel, 'cancel');
 				cancel.classList.add('mddtp-button');
 				cancel.setAttribute('type', 'button');
-				cancel.textContent = 'cancel';
 				this._addId(ok, 'ok');
 				ok.classList.add('mddtp-button');
 				ok.setAttribute('type', 'button');
-				ok.textContent = 'ok';
 				// add actions
 				action.appendChild(cancel);
 				action.appendChild(ok);
@@ -417,7 +435,16 @@
 
 				// switch according to 12 hour or 24 hour mode
 				if (this._mode) {
-					this._fillText(hour, m.format('H'));
+					// CHANGED exception case for 24 => 0 issue #57
+					var text = parseInt(m.format('H'), 10);
+					if (text === 0) {
+						text = '00';
+					}
+					this._fillText(hour, text);
+					// add the configurable colon in this mode issue #56
+					if (this._colon) {
+						dotSpan.removeAttribute('style');
+					}
 				} else {
 					this._fillText(hour, m.format('h'));
 					this._sDialog[m.format('A')].classList.add('mddtp-picker__color--active');
@@ -433,6 +460,7 @@
 				this._switchToView(hour);
 				this._switchToView(minute);
 				this._addClockEvent();
+				this._setButtonText();
 			}
 		}, {
 			key: '_initHour',
@@ -453,9 +481,20 @@
 						    span = document.createElement('span');
 
 						div.classList.add(cell);
-						span.textContent = i;
+						// CHANGED exception case for 24 => 0 issue #57
+						if (i === 24) {
+							span.textContent = '00';
+						} else {
+							span.textContent = i;
+						}
 						div.classList.add(rotate + j);
 						if (hourNow === i) {
+							div.id = hour;
+							div.classList.add(selected);
+							needle.classList.add(rotate + j);
+						}
+						// CHANGED exception case for 24 => 0 issue #58
+						if (i === 24 && hourNow === 0) {
 							div.id = hour;
 							div.classList.add(selected);
 							needle.classList.add(rotate + j);
@@ -545,6 +584,7 @@
 				this._changeMonth();
 				this._switchToView(subtitle);
 				this._switchToView(title);
+				this._setButtonText();
 			}
 		}, {
 			key: '_initViewHolder',
@@ -565,8 +605,8 @@
 				}
 				this._sDialog.tDate = m;
 				this._initMonth(current, m);
-				this._initMonth(next, moment(this._getMonth(m, 1)));
-				this._initMonth(previous, moment(this._getMonth(m, -1)));
+				this._initMonth(next, (0, _moment2.default)(this._getMonth(m, 1)));
+				this._initMonth(previous, (0, _moment2.default)(this._getMonth(m, -1)));
 				this._toMoveMonth();
 			}
 		}, {
@@ -579,17 +619,21 @@
 				this._fillText(innerDivs[0], displayMonth);
 				var docfrag = document.createDocumentFragment(),
 				    tr = innerDivs[3],
-				    firstDayOfMonth = parseInt(moment(m).date(1).day(), 10),
+				    firstDayOfMonth = _moment2.default.weekdays(!0).indexOf(_moment2.default.weekdays(!1, (0, _moment2.default)(m).date(1).day())),
 				    today = -1,
 				    selected = -1,
-				    lastDayOfMonth = parseInt(moment(m).endOf('month').format('D'), 10) + firstDayOfMonth - 1,
+				    lastDayOfMonth = parseInt((0, _moment2.default)(m).endOf('month').format('D'), 10) + firstDayOfMonth - 1,
 				    past = firstDayOfMonth,
 				    cellClass = 'mddtp-picker__cell',
 				    future = lastDayOfMonth;
 				// get the .mddtp-picker__tr element using innerDivs[3]
 
-				if (moment().isSame(m, 'month')) {
-					today = parseInt(moment().format('D'), 10);
+				/*
+    * @netTrek - first day of month dependented from moment.locale
+    */
+
+				if ((0, _moment2.default)().isSame(m, 'month')) {
+					today = parseInt((0, _moment2.default)().format('D'), 10);
 					today += firstDayOfMonth - 1;
 				}
 				if (this._past.isSame(m, 'month')) {
@@ -601,7 +645,7 @@
 					future += firstDayOfMonth - 1;
 				}
 				if (this._sDialog.sDate.isSame(m, 'month')) {
-					selected = parseInt(moment(m).format('D'), 10);
+					selected = parseInt((0, _moment2.default)(m).format('D'), 10);
 					selected += firstDayOfMonth - 1;
 				}
 				for (var i = 0; i < 42; i++) {
@@ -713,7 +757,11 @@
 				} else {
 					if (me._mode) {
 						spoke = 24;
-						value = me._sDialog.sDate.format('H');
+						value = parseInt(me._sDialog.sDate.format('H'), 10);
+						// CHANGED exception for 24 => 0 issue #58
+						if (value === 0) {
+							value = 24;
+						}
 					} else {
 						spoke = 12;
 						value = me._sDialog.sDate.format('h');
@@ -781,7 +829,7 @@
 						e.target.parentNode.id = sHour;
 						// set the sDate according to 24 or 12 hour mode
 						if (me._mode) {
-							setHour = e.target.textContent;
+							setHour = parseInt(e.target.textContent, 10);
 						} else {
 							if (me._sDialog.sDate.format('A') === 'AM') {
 								setHour = e.target.textContent;
@@ -807,7 +855,7 @@
 							selectedMinute.id = '';
 							selectedMinute.classList.remove(sClass);
 						}
-						// select the new hour
+						// select the new minute
 						e.target.parentNode.classList.add(sClass);
 						e.target.parentNode.id = sMinute;
 						// set the sDate minute
@@ -1027,7 +1075,7 @@
 				    rotate = 'mddtp-picker__cell--rotate-',
 				    hOffset = circularHolder.getBoundingClientRect(),
 				    divides = void 0,
-				    fakeNeedleDraggabilly = new Draggabilly(fakeNeedle, {
+				    fakeNeedleDraggabilly = new _Draggabilly2.default(fakeNeedle, {
 					containment: !0
 				});
 
@@ -1118,6 +1166,12 @@
 				};
 			}
 		}, {
+			key: '_setButtonText',
+			value: function _setButtonText() {
+				this._sDialog.cancel.textContent = this._cancel;
+				this._sDialog.ok.textContent = this._ok;
+			}
+		}, {
 			key: '_getMonth',
 			value: function _getMonth(moment, count) {
 				var m = void 0;
@@ -1179,8 +1233,11 @@
 				    grid = document.createElement('div'),
 				    th = document.createElement('div'),
 				    tr = document.createElement('div'),
-				    weekDays = ['S', 'F', 'T', 'W', 'T', 'M', 'S'],
+				    weekDays = _moment2.default.weekdaysMin(!0).reverse(),
 				    week = 7;
+				/**
+    * @netTrek - weekday dependented from moment.locale
+    */
 
 				while (week--) {
 					var span = document.createElement('span');
@@ -1239,12 +1296,20 @@
 		}], [{
 			key: 'dialog',
 			get: function get() {
-				return _dialog;
+				return mdDateTimePicker._dialog;
+			},
+			set: function set(value) {
+				mdDateTimePicker.dialog = value;
 			}
 		}]);
 
 		return mdDateTimePicker;
 	}();
+
+	mdDateTimePicker._dialog = {
+		view: !0,
+		state: !1
+	};
 
 	exports.default = mdDateTimePicker;
 });

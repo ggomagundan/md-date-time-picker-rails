@@ -1,0 +1,26 @@
+@import "mdDateTimePicker.min"; 
+
+.mddtp-picker-date .mddtp-picker__left {
+  /*background: url("../images/ic_keyboard_arrow_left_black_24px.svg"); */
+  background-image: url("<%= image_path('ic_keyboard_arrow_left_black_24px.svg') %>") !important;
+  left: 4px; 	
+}
+
+.mddtp-picker-date .mddtp-picker__right {
+  /*background: url("../images/ic_keyboard_arrow_right_black_24px.svg");*/
+  background-image: url("<%= image_path('ic_keyboard_arrow_right_black_24px.svg') %>") !important;
+  right: 4px; 
+}
+
+
+.mddtp-picker-date .mddtp-picker__left:disabled {
+  /*background-image: url("../images/ic_keyboard_arrow_left_black_disabled_24px.svg"); } */
+  background-image: url("<%= image_path('ic_keyboard_arrow_left_black_disabled_24px.svg') %>") !important ;
+}
+
+
+.mddtp-picker-date .mddtp-picker__right:disabled {
+  /*background-image: url("../images/ic_keyboard_arrow_right_black_disabled_24px.svg"); } */
+  background-image: url("<%= image_path('ic_keyboard_arrow_right_black_disabled_24px.svg') %>") !important;
+
+}

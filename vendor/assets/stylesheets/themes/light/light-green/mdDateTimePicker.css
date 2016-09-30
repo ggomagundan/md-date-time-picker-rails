@@ -4,6 +4,9 @@
 /* Shadows */
 /* Animations */
 /* Dialog */
+
+@import "light_themes_img";
+
 .mddtp-button {
   height: 36px;
   min-width: 64px;
@@ -84,7 +87,7 @@
     display: table-cell;
     vertical-align: top;
     height: 100%; }
-
+/*
 .mddtp-picker-date .mddtp-picker__left {
   background: url("../images/ic_keyboard_arrow_left_black_24px.svg");
   left: 4px; }
@@ -92,7 +95,7 @@
 .mddtp-picker-date .mddtp-picker__right {
   background: url("../images/ic_keyboard_arrow_right_black_24px.svg");
   right: 4px; }
-
+*/
 .mddtp-picker-date .mddtp-picker__left,
 .mddtp-picker-date .mddtp-picker__right {
   position: absolute;
@@ -119,13 +122,13 @@
   .mddtp-picker-date .mddtp-picker__right:disabled {
     background-repeat: no-repeat;
     background-position: center; }
-
+ /*
 .mddtp-picker-date .mddtp-picker__left:disabled {
   background-image: url("../images/ic_keyboard_arrow_left_black_disabled_24px.svg"); }
 
 .mddtp-picker-date .mddtp-picker__right:disabled {
   background-image: url("../images/ic_keyboard_arrow_right_black_disabled_24px.svg"); }
-
+*/
 .mddtp-picker__body .mddtp-picker__viewHolder {
   width: 314px;
   overflow: hidden; }

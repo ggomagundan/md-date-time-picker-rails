@@ -3,12 +3,13 @@
 Version](https://badge.fury.io/rb/md-date-time-picker-rails.svg)](https://badge.fury.io/rb/md-date-time-picker-rails)
 
 md-date-time-picker-rails gem is the integration of md-date-time-picker javascript
-library for your Rails 4, 5 application.
+library(using 2.2 Version) for your Rails 4, 5 application.
 
 md-date-time-picker is Material Design - Date and Time Picker
 source: https://github.com/PuranjayJain/md-date-time-picker
 
 Ruby gems url: https://rubygems.org/gems/md-date-time-picker-rails
+
 
 ## Installation
 
@@ -30,7 +31,8 @@ Now you need to edit your `app/assets/javascripts/application.js` file
 and add the following line:
 ``` javascript
 //= require moment.min
-//= require mdDateTimePicker.min
+//= require moment.locales# if using another locale 
+//= require mdDateTimePicker
 //= require draggabilly.pkgd.min # If using TimeDialog
 ```
 
@@ -38,12 +40,12 @@ And you need to edit your `app/assets/stylesheets/application.css` file
 and add the following line:
 
 ```css
-*= require md-date-time-picker
+*= require mdDateTimePicker
 ```
 
 If Use `app/assets/stylesheets/application.scss` file
 ```scss
-@import "md-date-time-picker";
+@import "mdDateTimePicker";
 ```
 
 ## Theme
@@ -59,12 +61,12 @@ and change the following line:
 
 ```css
 # app/assets/stylesheets/application.css
-*= require themes/dark/amber/md-date-time-picker
+*= require themes/dark/amber/mdDateTimePicker
 ```
 
 ```scss
 # app/assets/stylesheets/application.scss
-@import "themes/dark/amber/md-date-time-picker";
+@import "themes/dark/amber/mdDateTimePicker";
 ```
 
 Currently,  Support Theme List
@@ -142,5 +144,6 @@ https://puranjayjain.github.io/md-date-time-picker
 
 The gem is available as open source under the terms of the [MIT
 License](http://opensource.org/licenses/MIT).
+
 
 
