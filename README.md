@@ -32,8 +32,8 @@ and add the following line:
 ``` javascript
 //= require moment.min
 //= require moment.locales# if using another locale 
-//= require mdDateTimePicker
 //= require draggabilly.pkgd.min # If using TimeDialog
+//= require mdDateTimePicker
 ```
 
 And you need to edit your `app/assets/stylesheets/application.css` file
