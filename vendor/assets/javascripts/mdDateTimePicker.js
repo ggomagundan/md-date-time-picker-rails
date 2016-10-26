@@ -60,17 +60,18 @@
   * @param  {String}   type = 'date' or 'time 									[type of dialog]
   * @param  {moment}   init 																		[initial value for the dialog date or time, defaults to today] [@default = today]
   * @param  {moment}   past 																		[the past moment till which the calendar shall render] [@default = exactly 21 Years ago from init]
-  * @param  {moment}   future           												[the future moment till which the calendar shall render] [@default = init]
+  * @param  {moment}   future	 												[the future moment till which the calendar shall render] [@default = init]
   * @param	{Boolean}  mode 																		[this value tells whether the time dialog will have the 24 hour mode (true) or 12 hour mode (false)] [@default = false]
   * @param  {String}   orientation = 'LANDSCAPE' or 'PORTRAIT'  [force the orientation of the picker @default = 'LANDSCAPE']
   * @param  {element}  trigger																	[element on which all the events will be dispatched e.g var foo = document.getElementById('bar'), here element = foo]
   * @param  {String}  ok = 'ok'																	[ok button's text]
   * @param  {String}  cancel = 'cancel'													[cancel button's text]
   * @param  {Boolean} colon = true															[add an option to enable quote in 24 hour mode]
+  * @param  {Boolean} autoClose = false														[close dialog on date/time selection]
+  * @param  {Boolean} inner24 = false															[if 24-hour mode and (true), the PM hours shows in an inner dial]
   *
-  * @return {Object}    																				[mdDateTimePicker]
+  * @return {Object}																				[mdDateTimePicker]
   */
-
 		function mdDateTimePicker(_ref) {
 			var type = _ref.type,
 			    _ref$init = _ref.init,
@@ -90,7 +91,11 @@
 			    _ref$cancel = _ref.cancel,
 			    cancel = _ref$cancel === undefined ? 'cancel' : _ref$cancel,
 			    _ref$colon = _ref.colon,
-			    colon = _ref$colon === undefined ? !0 : _ref$colon;
+			    colon = _ref$colon === undefined ? !0 : _ref$colon,
+			    _ref$autoClose = _ref.autoClose,
+			    autoClose = _ref$autoClose === undefined ? !1 : _ref$autoClose,
+			    _ref$inner = _ref.inner24,
+			    inner24 = _ref$inner === undefined ? !1 : _ref$inner;
 
 			_classCallCheck(this, mdDateTimePicker);
 
@@ -104,6 +109,8 @@
 			this._ok = ok;
 			this._cancel = cancel;
 			this._colon = colon;
+			this._autoClose = autoClose;
+			this._inner24 = inner24;
 
 			/**
    * [dialog selected classes have the same structure as dialog but one level down]
@@ -132,19 +139,31 @@
 
 
 		_createClass(mdDateTimePicker, [{
+			key: 'hide',
+			value: function hide() {
+				this._selectDialog();
+				this._hideDialog();
+			}
+		}, {
+			key: 'show',
+			value: function show() {
+				this._selectDialog();
+				if (this._type === 'date') {
+					this._initDateDialog(this._init);
+				} else if (this._type === 'time') {
+					this._initTimeDialog(this._init);
+				}
+				this._showDialog();
+			}
+		}, {
 			key: 'toggle',
 			value: function toggle() {
 				this._selectDialog();
 				// work according to the current state of the dialog
 				if (mdDateTimePicker.dialog.state) {
-					this._hideDialog();
+					this.hide();
 				} else {
-					if (this._type === 'date') {
-						this._initDateDialog(this._init);
-					} else if (this._type === 'time') {
-						this._initTimeDialog(this._init);
-					}
-					this._showDialog();
+					this.show();
 				}
 			}
 		}, {
@@ -369,9 +388,13 @@
 					this._addClass(_subtitle, 'subtitle');
 					_subtitle.setAttribute('style', 'display: none');
 					this._addId(AM, 'AM');
-					AM.textContent = 'AM';
+					//AM.textContent = 'AM'
+					// Change to 'AM' to Locale Meridiem
+					AM.textContent = _moment2.default.langData()._meridiemParse.toString().replace(/\//g, "").split("|")[0];
 					this._addId(PM, 'PM');
-					PM.textContent = 'PM';
+					//PM.textContent = 'PM'
+					// Change to 'PM' to Locale Meridiem
+					PM.textContent = _moment2.default.langData()._meridiemParse.toString().replace(/\//g, "").split("|")[1];
 					// add them to title and subtitle
 					_title.appendChild(hour);
 					_title.appendChild(span);
@@ -410,6 +433,11 @@
 					body.appendChild(circularHolder);
 				}
 				action.classList.add('mddtp-picker__action');
+
+				if (this._autoClose === !0) {
+					action.style.display = "none";
+				}
+
 				this._addId(cancel, 'cancel');
 				cancel.classList.add('mddtp-button');
 				cancel.setAttribute('type', 'button');
@@ -447,7 +475,13 @@
 					}
 				} else {
 					this._fillText(hour, m.format('h'));
-					this._sDialog[m.format('A')].classList.add('mddtp-picker__color--active');
+					//this._sDialog[m.format('A')].classList.add('mddtp-picker__color--active')
+					// Using isPM function for Find PM 
+					if (m._locale.isPM(m.format('A'))) {
+						this._sDialog.PM.classList.add('mddtp-picker__color--active');
+					} else {
+						this._sDialog.AM.classList.add('mddtp-picker__color--active');
+					}
 					subtitle.removeAttribute('style');
 					dotSpan.removeAttribute('style');
 				}
@@ -470,13 +504,15 @@
 				    hour = 'mddtp-hour__selected',
 				    selected = 'mddtp-picker__cell--selected',
 				    rotate = 'mddtp-picker__cell--rotate-',
+				    rotate24 = 'mddtp-picker__cell--rotate24',
 				    cell = 'mddtp-picker__cell',
 				    docfrag = document.createDocumentFragment(),
 				    hourNow = void 0;
 
 				if (this._mode) {
+					var degreeStep = this._inner24 === !0 ? 10 : 5;
 					hourNow = parseInt(this._sDialog.tDate.format('H'), 10);
-					for (var i = 1, j = 5; i <= 24; i++, j += 5) {
+					for (var i = 1, j = degreeStep; i <= 24; i++, j += degreeStep) {
 						var div = document.createElement('div'),
 						    span = document.createElement('span');
 
@@ -487,17 +523,24 @@
 						} else {
 							span.textContent = i;
 						}
-						div.classList.add(rotate + j);
+
+						var position = j;
+						if (this._inner24 === !0 && i > 12) {
+							position -= 120;
+							div.classList.add(rotate24);
+						}
+
+						div.classList.add(rotate + position);
 						if (hourNow === i) {
 							div.id = hour;
 							div.classList.add(selected);
-							needle.classList.add(rotate + j);
+							needle.classList.add(rotate + position);
 						}
 						// CHANGED exception case for 24 => 0 issue #58
 						if (i === 24 && hourNow === 0) {
 							div.id = hour;
 							div.classList.add(selected);
-							needle.classList.add(rotate + j);
+							needle.classList.add(rotate + position);
 						}
 						div.appendChild(span);
 						docfrag.appendChild(div);
@@ -590,7 +633,6 @@
 			key: '_initViewHolder',
 			value: function _initViewHolder() {
 				var m = this._sDialog.tDate,
-				    picker = this._sDialog.picker,
 				    current = this._sDialog.current,
 				    previous = this._sDialog.previous,
 				    next = this._sDialog.next,
@@ -715,6 +757,14 @@
 						me._switchToDateView(el, me);
 					};
 				} else {
+					if (this._inner24 === !0 && me._mode) {
+						if (parseInt(me._sDialog.sDate.format('H'), 10) > 12) {
+							me._sDialog.needle.classList.add('mddtp-picker__cell--rotate24');
+						} else {
+							me._sDialog.needle.classList.remove('mddtp-picker__cell--rotate24');
+						}
+					}
+
 					el.onclick = function () {
 						me._switchToTimeView(me);
 					};
@@ -747,13 +797,17 @@
 				needle.classList.add(selection);
 				if (mdDateTimePicker.dialog.view) {
 					value = me._sDialog.sDate.format('m');
-					// move the fakeNeedle to correct position
-					setTimeout(function () {
-						var hOffset = circularHolder.getBoundingClientRect(),
-						    cOffset = circle.getBoundingClientRect();
 
-						fakeNeedle.setAttribute('style', 'left:' + (cOffset.left - hOffset.left) + 'px;top:' + (cOffset.top - hOffset.top) + 'px');
-					}, 300);
+					// Need to desactivate for the autoClose mode as it mess things up.  If you have an idea, feel free to give it a shot !
+					if (me._autoClose !== !0) {
+						// move the fakeNeedle to correct position
+						setTimeout(function () {
+							var hOffset = circularHolder.getBoundingClientRect(),
+							    cOffset = circle.getBoundingClientRect();
+
+							fakeNeedle.setAttribute('style', 'left:' + (cOffset.left - hOffset.left) + 'px;top:' + (cOffset.top - hOffset.top) + 'px');
+						}, 300);
+					}
 				} else {
 					if (me._mode) {
 						spoke = 24;
@@ -865,6 +919,10 @@
 						me._sDialog.minute.textContent = setMinute;
 						// switch the view
 						me._switchToTimeView(me);
+
+						if (me._autoClose === !0) {
+							me._sDialog.ok.onclick();
+						}
 					}
 				};
 			}
@@ -874,8 +932,7 @@
 				var me = this;
 				el.onclick = function (e) {
 					if (e.target && e.target.nodeName == 'SPAN' && e.target.classList.contains('mddtp-picker__cell')) {
-						var picker = me._sDialog.picker,
-						    day = e.target.textContent,
+						var day = e.target.textContent,
 						    currentDate = me._sDialog.tDate.date(day),
 						    sId = 'mddtp-date__selected',
 						    sClass = 'mddtp-picker__cell--selected',
@@ -897,6 +954,10 @@
 						me._fillText(subtitle, currentDate.year());
 						me._fillText(titleDay, currentDate.format('ddd, '));
 						me._fillText(titleMonth, currentDate.format('MMM D'));
+
+						if (me._autoClose === !0) {
+							me._sDialog.ok.onclick();
+						}
 					}
 				};
 			}
@@ -1044,7 +1105,12 @@
 				    PM = this._sDialog.PM;
 
 				AM.onclick = function (e) {
-					var m = me._sDialog.sDate.format('A');
+					//let m = me._sDialog.sDate.format('A')
+					// Change Locale Meridiem to AM/PM String
+					var m = 'AM';
+					if (me._sDialog.sDate._locale.isPM(me._sDialog.sDate.format('A'))) {
+						m = 'PM';
+					}
 					if (m === 'PM') {
 						me._sDialog.sDate.subtract(12, 'h');
 						AM.classList.toggle('mddtp-picker__color--active');
@@ -1052,7 +1118,12 @@
 					}
 				};
 				PM.onclick = function (e) {
-					var m = me._sDialog.sDate.format('A');
+					//let m = me._sDialog.sDate.format('A')
+					// Change Locale Meridiem to AM/PM String
+					var m = 'AM';
+					if (me._sDialog.sDate._locale.isPM(me._sDialog.sDate.format('A'))) {
+						m = 'PM';
+					}
 					if (m === 'AM') {
 						me._sDialog.sDate.add(12, 'h');
 						AM.classList.toggle('mddtp-picker__color--active');
@@ -1079,12 +1150,38 @@
 					containment: !0
 				});
 
-				fakeNeedleDraggabilly.on('pointerDown', function () {
+				fakeNeedleDraggabilly.on('pointerDown', function (e) {
+					//console.info ( 'pointerDown' , e );
 					hOffset = circularHolder.getBoundingClientRect();
 				});
-				fakeNeedleDraggabilly.on('dragMove', function (e) {
-					var xPos = e.clientX - hOffset.left - hOffset.width / 2,
-					    yPos = e.clientY - hOffset.top - hOffset.height / 2,
+				/**
+     * netTrek
+     * fixes for iOS - drag
+     */
+				fakeNeedleDraggabilly.on('pointerMove', function (e) {
+
+					var clientX = e.clientX,
+					    clientY = e.clientY;
+
+
+					if (clientX === undefined) {
+
+						if (e.pageX === undefined) {
+							if (e.touches && e.touches.length > 0) {
+								clientX = e.touches[0].clientX;
+								clientY = e.touches[0].clientY;
+							} else {
+								console.error('coult not detect pageX, pageY');
+							}
+						} else {
+							clientX = pageX - document.body.scrollLeft - document.documentElement.scrollLeft;
+							clientY = pageY - document.body.scrollTop - document.documentElement.scrollTop;
+						}
+					}
+					//console.info ( 'Drag clientX' , clientX, clientY, e );
+
+					var xPos = clientX - hOffset.left - hOffset.width / 2,
+					    yPos = clientY - hOffset.top - hOffset.height / 2,
 					    slope = Math.atan2(-yPos, xPos);
 
 					needle.className = '';
@@ -1108,7 +1205,11 @@
 					needle.classList.add(quick);
 					needle.classList.add(rotate + divides * 2);
 				});
-				fakeNeedleDraggabilly.on('dragEnd', function () {
+				/**
+     * netTrek
+     * fixes for iOS - drag
+     */
+				fakeNeedleDraggabilly.on('pointerUp', function (e) {
 					var minuteViewChildren = me._sDialog.minuteView.getElementsByTagName('div'),
 					    sMinute = 'mddtp-minute__selected',
 					    selectedMinute = document.getElementById(sMinute),
@@ -1258,7 +1359,6 @@
 		}, {
 			key: '_calcRotation',
 			value: function _calcRotation(spoke, value) {
-				var start = spoke / 12 * 3;
 				// set clocks top and right side value
 				if (spoke === 12) {
 					value *= 10;
