@@ -131,6 +131,13 @@ If use `app/assets/javascript/application.coffee`
 The Documentation is at
 https://puranjayjain.github.io/md-date-time-picker
 
+## Change Log
+
+Current Version 2.1.2
+
+This link listing [Change Log](https://github.com/ggomagundan/md-date-time-picker-rails/blob/master/CHANGE_LOG.md)
+
+
 ## Contributing
 
 1. Fork it
