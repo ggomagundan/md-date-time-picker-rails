@@ -388,13 +388,14 @@
 					this._addClass(_subtitle, 'subtitle');
 					_subtitle.setAttribute('style', 'display: none');
 					this._addId(AM, 'AM');
+					_moment2.default.localeData()._meridiemParse = this._changeUnicodeToChars(_moment2.default.localeData()._meridiemParse.toString());
 					//AM.textContent = 'AM'
 					// Change to 'AM' to Locale Meridiem
-					AM.textContent = _moment2.default.langData()._meridiemParse.toString().replace(/\//g, "").split("|")[0];
+					AM.textContent = _moment2.default.localeData()._meridiemParse.toString().replace(/\//g, "").split("|")[0];
 					this._addId(PM, 'PM');
 					//PM.textContent = 'PM'
 					// Change to 'PM' to Locale Meridiem
-					PM.textContent = _moment2.default.langData()._meridiemParse.toString().replace(/\//g, "").split("|")[1];
+					PM.textContent = _moment2.default.localeData()._meridiemParse.toString().replace(/\//g, "").split("|")[1];
 					// add them to title and subtitle
 					_title.appendChild(hour);
 					_title.appendChild(span);
@@ -1271,6 +1272,13 @@
 			value: function _setButtonText() {
 				this._sDialog.cancel.textContent = this._cancel;
 				this._sDialog.ok.textContent = this._ok;
+			}
+		}, {
+			key: '_changeUnicodeToChars',
+			value: function _changeUnicodeToChars(unicodeText) {
+				return unicodeText.replace(/\\u[\dA-F]{4}/gi, function (match) {
+					return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
+				});
 			}
 		}, {
 			key: '_getMonth',
