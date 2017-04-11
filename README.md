@@ -7,6 +7,7 @@ Version](https://badge.fury.io/rb/md-date-time-picker-rails.svg)](https://badge.
 [![Build Status](https://travis-ci.org/ggomagundan/clipboard-toastr-rails.svg?branch=master)](https://travis-ci.org/ggomagundan/clipboard-toastr-rails)
 [![GitHub issues](https://img.shields.io/github/issues/ggomagundan/md-date-time-picker-rails.svg)](https://github.com/ggomagundan/md-date-time-picker-rails/issues)
 [![Dependency Status](https://gemnasium.com/badges/github.com/ggomagundan/md-date-time-picker-rails.svg)](https://gemnasium.com/github.com/ggomagundan/md-date-time-picker-rails)
+[![Coverage Status](https://coveralls.io/repos/github/ggomagundan/md-date-time-picker-rails/badge.svg?branch=master)](https://coveralls.io/github/ggomagundan/md-date-time-picker-rails?branch=master)
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/ggomagundan/md-date-time-picker-rails/master/LICENSE)
 
