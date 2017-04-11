@@ -1,16 +1,16 @@
 (function (global, factory) {
 	if (typeof define === "function" && define.amd) {
-		define(['exports', 'moment', 'Draggabilly'], factory);
+		define(['exports', 'moment', 'draggabilly'], factory);
 	} else if (typeof exports !== "undefined") {
-		factory(exports, require('moment'), require('Draggabilly'));
+		factory(exports, require('moment'), require('draggabilly'));
 	} else {
 		var mod = {
 			exports: {}
 		};
-		factory(mod.exports, global.moment, global.Draggabilly);
+		factory(mod.exports, global.moment, global.draggabilly);
 		global.mdDateTimePicker = mod.exports;
 	}
-})(this, function (exports, _moment, _Draggabilly) {
+})(this, function (exports, _moment, _draggabilly) {
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -19,7 +19,7 @@
 
 	var _moment2 = _interopRequireDefault(_moment);
 
-	var _Draggabilly2 = _interopRequireDefault(_Draggabilly);
+	var _draggabilly2 = _interopRequireDefault(_draggabilly);
 
 	function _interopRequireDefault(obj) {
 		return obj && obj.__esModule ? obj : {
@@ -35,8 +35,8 @@
 
 	var _createClass = function () {
 		function defineProperties(target, props) {
-			for (var i = 0; i < props.length; i++) {
-				var descriptor = props[i];
+			for (var i = 0, descriptor; i < props.length; i++) {
+				descriptor = props[i];
 				descriptor.enumerable = descriptor.enumerable || !1;
 				descriptor.configurable = !0;
 				if ("value" in descriptor) descriptor.writable = !0;
@@ -57,20 +57,22 @@
   *
   * @method constructor
   *
-  * @param  {String}   type = 'date' or 'time 									[type of dialog]
-  * @param  {moment}   init 																		[initial value for the dialog date or time, defaults to today] [@default = today]
-  * @param  {moment}   past 																		[the past moment till which the calendar shall render] [@default = exactly 21 Years ago from init]
-  * @param  {moment}   future	 												[the future moment till which the calendar shall render] [@default = init]
-  * @param	{Boolean}  mode 																		[this value tells whether the time dialog will have the 24 hour mode (true) or 12 hour mode (false)] [@default = false]
-  * @param  {String}   orientation = 'LANDSCAPE' or 'PORTRAIT'  [force the orientation of the picker @default = 'LANDSCAPE']
-  * @param  {element}  trigger																	[element on which all the events will be dispatched e.g var foo = document.getElementById('bar'), here element = foo]
-  * @param  {String}  ok = 'ok'																	[ok button's text]
-  * @param  {String}  cancel = 'cancel'													[cancel button's text]
-  * @param  {Boolean} colon = true															[add an option to enable quote in 24 hour mode]
-  * @param  {Boolean} autoClose = false														[close dialog on date/time selection]
-  * @param  {Boolean} inner24 = false															[if 24-hour mode and (true), the PM hours shows in an inner dial]
+  * @param  {String}   type = 'date' or 'time 				[type of dialog]
+  * @param  {moment}   init 						[initial value for the dialog date or time, defaults to today] [@default = today]
+  * @param  {moment}   past 						[the past moment till which the calendar shall render] [@default = exactly 21 Years ago from init]
+  * @param  {moment}   future	 					[the future moment till which the calendar shall render] [@default = init]
+  * @param  {Boolean}  mode 						[this value tells whether the time dialog will have the 24 hour mode (true) or 12 hour mode (false)] [@default = false]
+  * @param  {String}   orientation = 'LANDSCAPE' or 'PORTRAIT'		[force the orientation of the picker @default = 'LANDSCAPE']
+  * @param  {element}  trigger						[element on which all the events will be dispatched e.g var foo = document.getElementById('bar'), here element = foo]
+  * @param  {String}  ok = 'ok'						[ok button's text]
+  * @param  {String}  cancel = 'cancel'					[cancel button's text]
+  * @param  {Boolean} colon = true					[add an option to enable quote in 24 hour mode]
+  * @param  {Boolean} autoClose = false					[close dialog on date/time selection]
+  * @param  {Boolean} inner24 = false					[if 24-hour mode and (true), the PM hours shows in an inner dial]
+  * @param  {String} prevHandle = <div class="mddtp-prev-handle"></div>	[The HTML content of the handle to go to previous month]
+  * @param  {String} nextHandle = <div class="mddtp-next-handle"></div>	[The HTML content of the handle to go to next month]
   *
-  * @return {Object}																				[mdDateTimePicker]
+  * @return {Object}							[mdDateTimePicker]
   */
 		function mdDateTimePicker(_ref) {
 			var type = _ref.type,
@@ -95,7 +97,11 @@
 			    _ref$autoClose = _ref.autoClose,
 			    autoClose = _ref$autoClose === undefined ? !1 : _ref$autoClose,
 			    _ref$inner = _ref.inner24,
-			    inner24 = _ref$inner === undefined ? !1 : _ref$inner;
+			    inner24 = _ref$inner === undefined ? !1 : _ref$inner,
+			    _ref$prevHandle = _ref.prevHandle,
+			    prevHandle = _ref$prevHandle === undefined ? '<div class="mddtp-prev-handle"></div>' : _ref$prevHandle,
+			    _ref$nextHandle = _ref.nextHandle,
+			    nextHandle = _ref$nextHandle === undefined ? '<div class="mddtp-next-handle"></div>' : _ref$nextHandle;
 
 			_classCallCheck(this, mdDateTimePicker);
 
@@ -111,6 +117,8 @@
 			this._colon = colon;
 			this._autoClose = autoClose;
 			this._inner24 = inner24;
+			this._prevHandle = prevHandle;
+			this._nextHandle = nextHandle;
 
 			/**
    * [dialog selected classes have the same structure as dialog but one level down]
@@ -123,7 +131,7 @@
    */
 			this._sDialog = {};
 			// attach the dialog if not present
-			if (!document.getElementById('mddtp-picker__' + this._type)) {
+			if (typeof document !== 'undefined' && !document.getElementById('mddtp-picker__' + this._type)) {
 				this._buildDialog();
 			}
 		}
@@ -154,6 +162,20 @@
 					this._initTimeDialog(this._init);
 				}
 				this._showDialog();
+			}
+		}, {
+			key: 'isOpen',
+			value: function isOpen() {
+				this._selectDialog();
+
+				return !!mdDateTimePicker.dialog.state;
+			}
+		}, {
+			key: 'isClosed',
+			value: function isClosed() {
+				this._selectDialog();
+
+				return !mdDateTimePicker.dialog.state;
 			}
 		}, {
 			key: 'toggle',
@@ -346,10 +368,14 @@
 					left.classList.add('mddtp-button');
 					this._addClass(left, 'left');
 					left.setAttribute('type', 'button');
+					left.innerHTML = this._prevHandle;
+
 					this._addId(right, 'right');
 					right.classList.add('mddtp-button');
 					this._addClass(right, 'right');
 					right.setAttribute('type', 'button');
+					right.innerHTML = this._nextHandle;
+
 					this._addId(years, 'years');
 					this._addClass(years, 'years', ['mddtp-picker__years--invisible', 'animated']);
 					// add them to body
@@ -388,14 +414,13 @@
 					this._addClass(_subtitle, 'subtitle');
 					_subtitle.setAttribute('style', 'display: none');
 					this._addId(AM, 'AM');
-					_moment2.default.localeData()._meridiemParse = this._changeUnicodeToChars(_moment2.default.localeData()._meridiemParse.toString());
 					//AM.textContent = 'AM'
 					// Change to 'AM' to Locale Meridiem
-					AM.textContent = _moment2.default.localeData()._meridiemParse.toString().replace(/\//g, "").split("|")[0];
+					AM.textContent = (0, _moment2.default)().localeData().meridiem(1, 1, !0);
 					this._addId(PM, 'PM');
 					//PM.textContent = 'PM'
 					// Change to 'PM' to Locale Meridiem
-					PM.textContent = _moment2.default.localeData()._meridiemParse.toString().replace(/\//g, "").split("|")[1];
+					PM.textContent = (0, _moment2.default)().localeData().meridiem(13, 1, !0);
 					// add them to title and subtitle
 					_title.appendChild(hour);
 					_title.appendChild(span);
@@ -477,7 +502,7 @@
 				} else {
 					this._fillText(hour, m.format('h'));
 					//this._sDialog[m.format('A')].classList.add('mddtp-picker__color--active')
-					// Using isPM function for Find PM 
+					// Using isPM function for Find PM
 					if (m._locale.isPM(m.format('A'))) {
 						this._sDialog.PM.classList.add('mddtp-picker__color--active');
 					} else {
@@ -730,8 +755,9 @@
 				    past = this._past.year(),
 				    future = this._future.year();
 
-				for (var year = past; year <= future; year++) {
-					var li = document.createElement('li');
+				for (var year = past, li; year <= future; year++) {
+					li = document.createElement('li');
+
 					li.textContent = year;
 					if (year === currentYear) {
 						li.id = 'mddtp-date__currentYear';
@@ -747,6 +773,51 @@
 				years.appendChild(docfrag);
 				// attach event handler to the ul to get the benefit of event delegation
 				this._changeYear(years);
+			}
+		}, {
+			key: '_pointNeedle',
+			value: function _pointNeedle(me) {
+				var spoke = 60,
+				    value = void 0,
+				    circle = this._sDialog.circle,
+				    fakeNeedle = this._sDialog.fakeNeedle,
+				    circularHolder = this._sDialog.circularHolder,
+				    selection = 'mddtp-picker__selection',
+				    needle = me._sDialog.needle;
+
+				// move the needle to correct position
+				needle.className = '';
+				needle.classList.add(selection);
+				if (!mdDateTimePicker.dialog.view) {
+					value = me._sDialog.sDate.format('m');
+
+					// Need to desactivate for the autoClose mode as it mess things up.  If you have an idea, feel free to give it a shot !
+					if (me._autoClose !== !0) {
+						// move the fakeNeedle to correct position
+						setTimeout(function () {
+							var hOffset = circularHolder.getBoundingClientRect(),
+							    cOffset = circle.getBoundingClientRect();
+
+							fakeNeedle.setAttribute('style', 'left:' + (cOffset.left - hOffset.left) + 'px;top:' + (cOffset.top - hOffset.top) + 'px');
+						}, 300);
+					}
+				} else {
+					if (me._mode) {
+						spoke = 24;
+						value = parseInt(me._sDialog.sDate.format('H'), 10);
+						// CHANGED exception for 24 => 0 issue #58
+						if (value === 0) {
+							value = 24;
+						}
+					} else {
+						spoke = 12;
+						value = me._sDialog.sDate.format('h');
+					}
+				}
+				var rotationClass = me._calcRotation(spoke, parseInt(value, 10));
+				if (rotationClass) {
+					needle.classList.add(rotationClass);
+				}
 			}
 		}, {
 			key: '_switchToView',
@@ -780,13 +851,7 @@
 				    minute = me._sDialog.minute,
 				    activeClass = 'mddtp-picker__color--active',
 				    hidden = 'mddtp-picker__circularView--hidden',
-				    selection = 'mddtp-picker__selection',
-				    needle = me._sDialog.needle,
-				    circularHolder = me._sDialog.circularHolder,
-				    circle = me._sDialog.circle,
-				    fakeNeedle = me._sDialog.fakeNeedle,
-				    spoke = 60,
-				    value = void 0;
+				    selection = 'mddtp-picker__selection';
 
 				// toggle view classes
 				hourView.classList.toggle(hidden);
@@ -794,40 +859,9 @@
 				hour.classList.toggle(activeClass);
 				minute.classList.toggle(activeClass);
 				// move the needle to correct position
-				needle.className = '';
-				needle.classList.add(selection);
-				if (mdDateTimePicker.dialog.view) {
-					value = me._sDialog.sDate.format('m');
-
-					// Need to desactivate for the autoClose mode as it mess things up.  If you have an idea, feel free to give it a shot !
-					if (me._autoClose !== !0) {
-						// move the fakeNeedle to correct position
-						setTimeout(function () {
-							var hOffset = circularHolder.getBoundingClientRect(),
-							    cOffset = circle.getBoundingClientRect();
-
-							fakeNeedle.setAttribute('style', 'left:' + (cOffset.left - hOffset.left) + 'px;top:' + (cOffset.top - hOffset.top) + 'px');
-						}, 300);
-					}
-				} else {
-					if (me._mode) {
-						spoke = 24;
-						value = parseInt(me._sDialog.sDate.format('H'), 10);
-						// CHANGED exception for 24 => 0 issue #58
-						if (value === 0) {
-							value = 24;
-						}
-					} else {
-						spoke = 12;
-						value = me._sDialog.sDate.format('h');
-					}
-				}
-				var rotationClass = me._calcRotation(spoke, parseInt(value, 10));
-				if (rotationClass) {
-					needle.classList.add(rotationClass);
-				}
 				// toggle the view type
 				mdDateTimePicker.dialog.view = !mdDateTimePicker.dialog.view;
+				me._pointNeedle(me);
 			}
 		}, {
 			key: '_switchToDateView',
@@ -844,7 +878,7 @@
 					years.classList.remove('mddtp-picker__years--invisible');
 					years.classList.add('zoomIn');
 					// scroll into the view
-					currentYear.scrollIntoViewIfNeeded();
+					currentYear.scrollIntoViewIfNeeded && currentYear.scrollIntoViewIfNeeded();
 				} else {
 					years.classList.add('zoomOut');
 					viewHolder.classList.remove('zoomOut');
@@ -896,7 +930,10 @@
 						// set the display hour
 						me._sDialog.hour.textContent = e.target.textContent;
 						// switch the view
-						me._switchToTimeView(me);
+						me._pointNeedle(me);
+						setTimeout(function () {
+							me._switchToTimeView(me);
+						}, 700);
 					}
 				};
 				minuteView.onclick = function (e) {
@@ -918,8 +955,7 @@
 						me._sDialog.sDate.minute(setMinute);
 						// set the display minute
 						me._sDialog.minute.textContent = setMinute;
-						// switch the view
-						me._switchToTimeView(me);
+						me._pointNeedle(me);
 
 						if (me._autoClose === !0) {
 							me._sDialog.ok.onclick();
@@ -1147,7 +1183,7 @@
 				    rotate = 'mddtp-picker__cell--rotate-',
 				    hOffset = circularHolder.getBoundingClientRect(),
 				    divides = void 0,
-				    fakeNeedleDraggabilly = new _Draggabilly2.default(fakeNeedle, {
+				    fakeNeedleDraggabilly = new _draggabilly2.default(fakeNeedle, {
 					containment: !0
 				});
 
@@ -1210,7 +1246,7 @@
      * netTrek
      * fixes for iOS - drag
      */
-				fakeNeedleDraggabilly.on('pointerUp', function (e) {
+				var onDragEnd = function onDragEnd(e) {
 					var minuteViewChildren = me._sDialog.minuteView.getElementsByTagName('div'),
 					    sMinute = 'mddtp-minute__selected',
 					    selectedMinute = document.getElementById(sMinute),
@@ -1241,7 +1277,10 @@
 					}
 					minute.textContent = me._numWithZero(divides);
 					me._sDialog.sDate.minutes(divides);
-				});
+				};
+
+				fakeNeedleDraggabilly.on('pointerUp', onDragEnd);
+				fakeNeedleDraggabilly.on('dragEnd', onDragEnd);
 			}
 		}, {
 			key: '_attachEventHandlers',
@@ -1272,13 +1311,6 @@
 			value: function _setButtonText() {
 				this._sDialog.cancel.textContent = this._cancel;
 				this._sDialog.ok.textContent = this._ok;
-			}
-		}, {
-			key: '_changeUnicodeToChars',
-			value: function _changeUnicodeToChars(unicodeText) {
-				return unicodeText.replace(/\\u[\dA-F]{4}/gi, function (match) {
-					return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
-				});
 			}
 		}, {
 			key: '_getMonth',

@@ -1,5 +1,8 @@
 ## Release History
 
+ * **v2.2.0** - 2017-04-11
+   - Upgrade `md-date-time-picker` library to 2.3.0 Version
+
  * **v2.1.2** - 2016-11-02
    - Add function `ChangeUnicodeToChars` for change unicode text to pure string on production environment
 

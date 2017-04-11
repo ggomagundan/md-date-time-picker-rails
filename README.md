@@ -1,9 +1,17 @@
 # md-date-time-picker-rails
 [![Gem
 Version](https://badge.fury.io/rb/md-date-time-picker-rails.svg)](https://badge.fury.io/rb/md-date-time-picker-rails)
+![](http://ruby-gem-downloads-badge.herokuapp.com/md-date-time-picker-rails?type=total)
+[![Code Climate](https://codeclimate.com/github/ggomagundan/md-date-time-picker-rails/badges/gpa.svg)](https://codeclimate.com/github/ggomagundan/md-date-time-picker-rails)
+
+[![Build Status](https://travis-ci.org/ggomagundan/clipboard-toastr-rails.svg?branch=master)](https://travis-ci.org/ggomagundan/clipboard-toastr-rails)
+[![GitHub issues](https://img.shields.io/github/issues/ggomagundan/md-date-time-picker-rails.svg)](https://github.com/ggomagundan/md-date-time-picker-rails/issues)
+[![Dependency Status](https://gemnasium.com/badges/github.com/ggomagundan/md-date-time-picker-rails.svg)](https://gemnasium.com/github.com/ggomagundan/md-date-time-picker-rails)
+
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/ggomagundan/md-date-time-picker-rails/master/LICENSE)
 
 md-date-time-picker-rails gem is the integration of md-date-time-picker javascript
-library(using 2.2 Version) for your Rails 4, 5 application.
+library(using 2.3 Version) for your Rails 4, 5 application.
 
 md-date-time-picker is Material Design - Date and Time Picker
 source: https://github.com/PuranjayJain/md-date-time-picker
@@ -133,7 +141,7 @@ https://puranjayjain.github.io/md-date-time-picker
 
 ## Change Log
 
-Current Version 2.1.2
+Current Version 2.2.0
 
 This link listing [Change Log](https://github.com/ggomagundan/md-date-time-picker-rails/blob/master/CHANGE_LOG.md)
 
